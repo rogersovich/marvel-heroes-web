@@ -2,12 +2,18 @@ import React from "react";
 import { Character } from "../../store/character/character.types";
 import { Box, Image } from "@chakra-ui/react";
 import { Thumbnail } from "../../store/character/character.types";
+import Pagination from "../../utils/Pagination";
 
 interface Props {
   characters: Character[]
+  page: number,
+  count: number,
+  limit: number,
+  onChangePagination: (page: number) => void
+
 }
 
-const HomeList: React.FC<Props> = ({ characters }) => {
+const HomeList: React.FC<Props> = ({ characters, page, count, limit, onChangePagination }) => {
   const formatImage = (image: Thumbnail) => {
     const thumbnail = `${image.path}.${image.extension}`
     return thumbnail
@@ -24,10 +30,10 @@ const HomeList: React.FC<Props> = ({ characters }) => {
   return (
     <>
       <div className="tw-px-4 tw-py-3">
-        <div className="tw-text-2xl bold tw-text-center">
+        <div className="tw-text-3xl bold tw-text-center tw-mb-3">
           List Heroes fo Character
         </div>
-        <br />
+
         <div className="grid-12 tw-gap-4">
           {characters.map((character) => (
             <div className="md:tw-col-span-4 xl:tw-col-span-3" key={character.id}>
@@ -72,6 +78,15 @@ const HomeList: React.FC<Props> = ({ characters }) => {
               </Box>
             </div>
           ))}
+        </div>
+        <br />
+        <div className="tw-text-center">
+          <Pagination
+            currentPage={page}
+            totalCount={count}
+            pageSize={limit}
+            onPageChange={(page: number) => onChangePagination(page)}
+          />
         </div>
       </div>
     </>
