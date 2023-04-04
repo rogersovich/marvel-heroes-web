@@ -8,6 +8,8 @@ import {
   CharacterActions,
   BodyCharacter,
   ParamsCharacter,
+  Character,
+  Thumbnail
 } from "./character.types"
 import { getCharactersApi } from "../../api/character"
 
@@ -26,7 +28,30 @@ function* fetchUsersSaga(action: GetCharacterAction) {
       fetchAPI = call(getCharactersApi)
     }
     const { data } = yield fetchAPI
-    yield put(fetchCharactersSuccess(data as BodyCharacter))
+    const characters: Character[] = data?.results.map((character: any) => {
+      const thumbnailChar: Thumbnail = {
+        path: character.thumbnail.path,
+        extension: character.thumbnail.extension,
+      }
+      return {
+        id: character.id,
+        name: character.name,
+        description: character.description,
+        modified: character.modified,
+        thumbnail: thumbnailChar,
+        comicsCount: character.comics.available,
+        seriesCount: character.series.available,
+        storiesCount: character.stories.available,
+      }
+    })
+    const res: BodyCharacter = {
+      results: characters,
+      offset: data.offset,
+      limit: data.limit,
+      total: data.total,
+      count: data.count,
+    }
+    yield put(fetchCharactersSuccess(res))
   } catch (error: any) {
     yield put(fetchCharactersFailure(error.response.data))
   }

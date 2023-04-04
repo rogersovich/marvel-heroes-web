@@ -14,6 +14,9 @@ export interface Character {
   description: string
   modified: Date
   thumbnail: Thumbnail
+  comicsCount: number
+  seriesCount: number
+  storiesCount: number
 }
 
 export interface BodyCharacter {
